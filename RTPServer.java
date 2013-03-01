@@ -1,4 +1,5 @@
 import java.awt.*;
+import javax.swing.*;
 
 import java.net.*;
 import java.net.InetAddress;
@@ -10,10 +11,12 @@ import javax.media.format.*;
 import javax.media.protocol.ContentDescriptor;
 import javax.media.protocol.DataSource;
 
-public class RTPServer
+public class RTPServer extends JPanel
 {
 	public RTPServer()
 	{
+		setPreferredSize(new Dimension(400,400));
+
 		try
 		{
 			// create the RTP Manager
@@ -71,19 +74,10 @@ public class RTPServer
 
 			SendStream sendStream = rtpManager.createSendStream( dataOutput, 1);
 			sendStream.start();
-
-			System.out.println("Going");
-			
-			while(processor != null)
-			{
-				//
-			}
-
-			System.out.println("Finished");
 			
 			// call dispose at the end of the life-cycle of this RTPManager so
 			// it is prepared to be garbage-collected.
-			rtpManager.dispose();
+			//rtpManager.dispose();
 		}
 		catch (Exception e)
 		{
@@ -93,6 +87,10 @@ public class RTPServer
 
 	public static void main(String[] args)
 	{
-		new RTPServer();
+		JFrame frame = new JFrame();
+		frame.getContentPane().add(new RTPServer());
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.pack();
+		frame.setVisible(true);
 	}
 } //RTPServer

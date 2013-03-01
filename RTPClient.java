@@ -59,9 +59,6 @@ public class RTPClient extends JPanel
 		}
 
 		player.start();
-
-		//Component c = player.getVisualComponent();
-		//add(c);
 	}
 
 	public static void main(String[] args)
