@@ -1,12 +1,14 @@
 import java.awt.*;
 import javax.swing.*;
 import java.io.*;
+import java.lang.Thread;
 
 import java.net.*;
 import java.net.InetAddress;
 
 import javax.media.*;
 import javax.media.rtp.*;
+import javax.media.Control;
 import javax.media.ProcessorModel;
 import javax.media.format.*;
 import javax.media.protocol.ContentDescriptor;
@@ -53,10 +55,21 @@ public class RTPClient extends JPanel
 		}
 		
 		player.realize();
-		while ((player.getState() != Controller.Realized))
+		while ((player.
+		getState() != Controller.Realized))
 		{
-			//
+			/*try
+			{
+				Thread.sleep(100);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}       */
 		}
+		
+		//Component c = player.getVisualComponent();
+        	//add(c);
 
 		player.start();
 	}

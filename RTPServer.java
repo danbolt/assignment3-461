@@ -1,21 +1,35 @@
 import java.awt.*;
 import javax.swing.*;
+import java.awt.event.*;
 
 import java.net.*;
 import java.net.InetAddress;
 
 import javax.media.*;
 import javax.media.rtp.*;
+import javax.media.Control;
 import javax.media.ProcessorModel;
 import javax.media.format.*;
 import javax.media.protocol.ContentDescriptor;
 import javax.media.protocol.DataSource;
 
-public class RTPServer extends JPanel
+public class RTPServer extends JPanel implements ActionListener
 {
+	Processor processor = null;
+
 	public RTPServer()
 	{
 		setPreferredSize(new Dimension(400,400));
+		
+		JButton playButton = new JButton("Play");
+		playButton.setActionCommand("play");
+		playButton.addActionListener(this);
+		add(playButton);
+		
+		JButton stopButton = new JButton("Stop");
+		stopButton.setActionCommand("stop");
+		stopButton.addActionListener(this);
+		add(stopButton);
 
 		try
 		{
@@ -28,14 +42,10 @@ public class RTPServer extends JPanel
 			
 			// initialize the RTPManager
 			rtpManager.initialize( localAddress);
-			
-			// add the ReceiveStreamListener if you need to receive data
-			// and do other application specific stuff
-			// ...
 	
 			// create a multicast address for 224.1.1.0 and ports 3000/3001
 			InetAddress ipAddress = InetAddress.getByName( "224.1.1.0");
-			
+
 			SessionAddress multiAddress = new SessionAddress( ipAddress, 8080);
 			
 			// initialize the RTPManager
@@ -45,15 +55,21 @@ public class RTPServer extends JPanel
 			rtpManager.addTarget( multiAddress);
 	
 			// create a send stream for the output data source of a processor
-			// and start it
 			DataSource dataInput = Manager.createDataSource(new MediaLocator(new URI("file:samples/atime.mov").toURL() ));
 
-			Processor processor = Manager.createProcessor(dataInput);
+			processor = Manager.createProcessor(dataInput);
 			processor.configure();
 
 			while ((processor.getState() != Processor.Configured))
 			{
-				//
+				try
+				{
+					Thread.sleep(100);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 
 			processor.setContentDescriptor(new ContentDescriptor(ContentDescriptor.RAW_RTP));
@@ -61,19 +77,26 @@ public class RTPServer extends JPanel
 
 			while ((processor.getState() != Controller.Realized))
 			{
-				//
+				try
+				{
+					Thread.sleep(100);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 			
 			processor.setStopTime(processor.getDuration());
 			
 			System.out.println(processor.getDuration().getSeconds());
-			
-			processor.start();
-			
+
 			DataSource dataOutput = processor.getDataOutput();
 
 			SendStream sendStream = rtpManager.createSendStream( dataOutput, 1);
+
 			sendStream.start();
+			processor.start();
 			
 			// call dispose at the end of the life-cycle of this RTPManager so
 			// it is prepared to be garbage-collected.
@@ -82,6 +105,18 @@ public class RTPServer extends JPanel
 		catch (Exception e)
 		{
 			e.printStackTrace();
+		}
+	}
+	
+	public void actionPerformed(ActionEvent ex)
+	{
+		if ("start".equals(ex.getActionCommand()))
+		{
+			processor.start();
+		}
+		else if ("stop".equals(ex.getActionCommand()))
+		{
+			processor.stop();
 		}
 	}
 
