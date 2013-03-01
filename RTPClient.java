@@ -23,7 +23,7 @@ public class RTPClient extends JPanel
 		MediaLocator media = null;
 		try
 		{
-			media = new MediaLocator("rtp://224.1.1.0:8080");
+			media = new MediaLocator("rtp://224.1.1.0:8080/audio/16");
 		}
 		catch (Exception e)
 		{
@@ -58,9 +58,10 @@ public class RTPClient extends JPanel
 			//
 		}
 
-		Component c = player.getVisualComponent();
-		add(c);
 		player.start();
+
+		//Component c = player.getVisualComponent();
+		//add(c);
 	}
 
 	public static void main(String[] args)
