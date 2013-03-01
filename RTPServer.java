@@ -1,3 +1,5 @@
+import java.awt.*;
+
 import java.net.*;
 import java.net.InetAddress;
 
@@ -31,7 +33,7 @@ public class RTPServer
 			// create a multicast address for 224.1.1.0 and ports 3000/3001
 			InetAddress ipAddress = InetAddress.getByName( "224.1.1.0");
 			
-			SessionAddress multiAddress = new SessionAddress( ipAddress, 3000);
+			SessionAddress multiAddress = new SessionAddress( ipAddress, 8080);
 			
 			// initialize the RTPManager
 			rtpManager.initialize( multiAddress);
